@@ -1,0 +1,55 @@
+version: '3.7'
+
+services:
+  nginx:
+    container_name: nginx
+    build:
+      context: .
+      dockerfile: docker/nginx/Dockerfile
+    volumes:
+      - ./:/var/www/app
+    ports:
+      - 80:80
+    networks:
+      - todo
+
+  php:
+    container_name: php
+    build:
+      context: .
+      dockerfile: docker/php/Dockerfile
+    volumes:
+      - ./:/var/www/app
+    networks:
+      - todo
+
+  postgres:
+    container_name: postgres
+    image: postgres:16
+    restart: always
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_DB: mydatabase
+      POSTGRES_USER: user-76gjhg
+      POSTGRES_PASSWORD: fjGbh8bd-bdbT345-h3
+    volumes:
+      - ./docker/postgres/initdb.sql:/docker-entrypoint-initdb.d/init.sql"
+      - ./data:/var/lib/postgresql/data:rw
+    networks:
+      - todo
+
+  adminer:
+    container_name: adminer
+    image: adminer
+    restart: always
+    ports:
+      - 8080:8080
+    depends_on:
+      - postgres
+    networks:
+      - todo
+
+networks:
+  todo:
+    name: todo
