@@ -23,9 +23,8 @@ class TaskFixture extends Fixture implements OrderedFixtureInterface
             $task = new Task();
             $task->setTitle('Task Level 1 - ' . $i);
             $task->setDescription('Description for Task Level 1 - ' . $i);
-            $task->setCreatedAt(new \DateTimeImmutable());
-            $task->setStatus(false);
             $task->setOwner($user);
+            $task->setPriority(1);
             $manager->persist($task);
             $this->addReference('task-level-1-' . $i, $task);
 
@@ -34,9 +33,9 @@ class TaskFixture extends Fixture implements OrderedFixtureInterface
                 $subTask = new Task();
                 $subTask->setTitle('Task Level 2 - ' . $i . '.' . $j);
                 $subTask->setDescription('Description for Task Level 2 - ' . $i);
-                $subTask->setCreatedAt(new \DateTimeImmutable());
                 $subTask->setParent($task);
                 $subTask->setOwner($user);
+                $task->setPriority(1);
                 $manager->persist($subTask);
                 $this->addReference('task-level-2-' . $i . '-' . $j, $subTask);
 
@@ -45,9 +44,9 @@ class TaskFixture extends Fixture implements OrderedFixtureInterface
                     $subSubTask = new Task();
                     $subSubTask->setTitle('Task Level 3 - ' . $i . '.' . $j . '.' . $k);
                     $subSubTask->setDescription('Description for Task Level 3 - ' . $i);
-                    $subSubTask->setCreatedAt(new \DateTimeImmutable());
                     $subSubTask->setParent($subTask);
                     $subSubTask->setOwner($user);
+                    $task->setPriority(1);
                     $manager->persist($subSubTask);
                     $this->addReference('task-level-3-' . $i . '-' . $j . '-' . $k, $subSubTask);
                 }

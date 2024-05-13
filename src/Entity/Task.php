@@ -11,8 +11,12 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: TaskRepository::class)]
-class Task
+#[ORM\HasLifecycleCallbacks]
+class Task implements \JsonSerializable
 {
+    public const STATUS_TODO = false;
+    public const STATUS_COMPLETED = true;
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -31,7 +35,7 @@ class Task
     private \DateTimeImmutable $createdAt;
 
     #[ORM\Column(nullable: true)]
-    private \DateTimeImmutable $completedAt;
+    private ?\DateTimeImmutable $completedAt;
 
     #[ORM\ManyToOne(targetEntity: self::class, inversedBy: 'subTasks')]
     private ?self $parent = null;
@@ -46,6 +50,9 @@ class Task
     #[ORM\JoinColumn(nullable: false)]
     private User $owner;
 
+    #[ORM\Column]
+    private int $priority;
+
     public function __construct()
     {
         $this->subTasks = new ArrayCollection();
@@ -56,7 +63,7 @@ class Task
         return $this->id;
     }
 
-    public function isStatus(): bool
+    public function getStatus(): bool
     {
         return $this->status;
     }
@@ -97,9 +104,10 @@ class Task
         return $this->createdAt;
     }
 
-    public function setCreatedAt(\DateTimeImmutable $createdAt): self
+    #[ORM\PrePersist]
+    public function setCreatedAt(): self
     {
-        $this->createdAt = $createdAt;
+        $this->createdAt = new \DateTimeImmutable();
 
         return $this;
     }
@@ -136,24 +144,12 @@ class Task
         return $this->subTasks;
     }
 
-    public function addSubTask(Task $subTask): self
+    /**
+     * @param Collection<int, Task> $subTasks
+     */
+    public function setSubTasks(Collection $subTasks): self
     {
-        if (!$this->subTasks->contains($subTask)) {
-            $this->subTasks->add($subTask);
-            $subTask->setParent($this);
-        }
-
-        return $this;
-    }
-
-    public function removeSubTask(Task $subTask): self
-    {
-        if ($this->subTasks->removeElement($subTask)) {
-            // set the owning side to null (unless already changed)
-            if ($subTask->getParent() === $this) {
-                $subTask->setParent(null);
-            }
-        }
+        $this->subTasks = $subTasks;
 
         return $this;
     }
@@ -168,5 +164,33 @@ class Task
         $this->owner = $owner;
 
         return $this;
+    }
+
+    public function getPriority(): int
+    {
+        return $this->priority;
+    }
+
+    public function setPriority(int $priority): static
+    {
+        $this->priority = $priority;
+
+        return $this;
+    }
+
+    public function jsonSerialize(): array
+    {
+        return [
+            'id' => $this->id,
+            'status' => $this->status,
+            'title' => $this->title,
+            'description' => $this->description,
+            'createdAt' => $this->createdAt->format(\DateTime::ISO8601),
+            'completedAt' => $this->completedAt?->format(\DateTime::ISO8601),
+            'parent' => $this->parent?->getId(),
+            'subTasks' => $this->subTasks->toArray(),
+            'owner' => $this->owner->getId(),
+            'priority' => $this->priority,
+        ];
     }
 }
