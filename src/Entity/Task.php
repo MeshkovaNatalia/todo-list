@@ -14,6 +14,7 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\HasLifecycleCallbacks]
 class Task implements \JsonSerializable
 {
+    // An enum should be used here
     public const STATUS_TODO = false;
     public const STATUS_COMPLETED = true;
 
