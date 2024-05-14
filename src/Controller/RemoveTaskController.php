@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Service\TaskServiceInterface;
 use App\Storage\TaskStorageInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -16,6 +17,7 @@ class RemoveTaskController extends AbstractController
     public function __construct(
         private AuthorizationCheckerInterface $authorizationChecker,
         private TaskStorageInterface $taskStorage,
+        private TaskServiceInterface $taskService,
     ) {
     }
 
@@ -30,6 +32,10 @@ class RemoveTaskController extends AbstractController
 
         if (false === $this->authorizationChecker->isGranted('owner', $task)) {
             return $this->json(['error' => 'Access denied'], 403);
+        }
+
+        if (true === $this->taskService->isTaskCompleted($task)) {
+            return $this->json(['error' => 'Task is completed'], 400);
         }
 
         $this->taskStorage->remove($task);

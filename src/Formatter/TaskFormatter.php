@@ -26,7 +26,9 @@ class TaskFormatter implements TaskFormatterInterface
                 $formattedTask = new FormattedTasksDTO(
                     $task->getId(),
                     $task->getTitle(),
+                    $task->getDescription(),
                     $task->getStatus(),
+                    $task->getPriority(),
                     $task->getParent()?->getId(),
                     $subTasks
                 );

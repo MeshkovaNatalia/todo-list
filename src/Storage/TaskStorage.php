@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Storage;
 
+use App\DTO\TaskFilterDTO;
+use App\DTO\TaskSortDTO;
 use App\Entity\Task;
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
@@ -40,5 +42,10 @@ class TaskStorage implements TaskStorageInterface
     public function getAllForUser(User $user): array
     {
         return $this->entityManager->getRepository(Task::class)->findBy(['owner' => $user]);
+    }
+
+    public function getAllForUserFiltered(User $user, TaskFilterDTO $filter, TaskSortDTO $sort): array
+    {
+        return $this->entityManager->getRepository(Task::class)->findByFilterAndSort($user->getId(), $filter, $sort);
     }
 }
