@@ -28,8 +28,8 @@ class GetTasksController extends AbstractController
     #[Route('/tasks', methods: ['GET'])]
     public function __invoke(Request $request): JsonResponse
     {
-        $filterParams = \json_decode($request->query->get('filter'), true) ?? [];
-        $sortParams =  \json_decode($request->query->get('sort'), true) ?? [];
+        $filterParams = \json_decode($request->query->get('filter', '{}'), true);
+        $sortParams =  \json_decode($request->query->get('sort', '{}'), true);
 
         // It should be validation here
 

@@ -40,7 +40,7 @@ class TaskSortBuilder
 
     public function fromArray(array $data): self
     {
-        foreach ($data['sort'] as $item) {
+        foreach ($data['sort'] ?? [] as $item) {
             $this->sortItems[] = new TaskSortItemDTO($item['field'], SortTypeEnum::tryFrom($item['order']));
         }
 

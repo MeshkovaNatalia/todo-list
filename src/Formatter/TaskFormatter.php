@@ -5,35 +5,28 @@ declare(strict_types=1);
 namespace App\Formatter;
 
 use App\Entity\Task;
-use App\Formatter\DTO\FormattedTasksDTO;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 
 class TaskFormatter implements TaskFormatterInterface
 {
     public function formatAsTree(array $tasks): array
     {
-        return $this->formatTaskAsTree($tasks, null);
+        return $this->formatTaskAsTree($tasks, null)->toArray();
     }
 
-    private function formatTaskAsTree(array $tasks, int $parentId = null): array
+    private function formatTaskAsTree(array $tasks, int $parentId = null): Collection
     {
-        $tree = [];
+        $tree = new ArrayCollection();
 
         /** @var Task $task */
         foreach ($tasks as $task) {
             if ($parentId === $task->getParent()?->getId()) {
                 $subTasks = $this->formatTaskAsTree($tasks, $task->getId());
 
-                $formattedTask = new FormattedTasksDTO(
-                    $task->getId(),
-                    $task->getTitle(),
-                    $task->getDescription(),
-                    $task->getStatus(),
-                    $task->getPriority(),
-                    $task->getParent()?->getId(),
-                    $subTasks
-                );
+                $task->setSubTasks($subTasks);
 
-                $tree[] = $formattedTask;
+                $tree->add($task);
             }
         }
 
