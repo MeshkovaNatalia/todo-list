@@ -20,15 +20,14 @@ final class Version20240514122959 extends AbstractMigration
     public function up(Schema $schema): void
     {
         // this up() migration is auto-generated, please modify it to your needs
-        $this->addSql('DROP INDEX idx_parent_id');
-        $this->addSql('ALTER TABLE task ALTER priority DROP DEFAULT');
+        $this->addSql('ALTER TABLE task ALTER priority SET DEFAULT 1');
+        $this->addSql('CREATE INDEX idx_parent_id ON task (parent_id)');
     }
 
     public function down(Schema $schema): void
     {
         // this down() migration is auto-generated, please modify it to your needs
-        $this->addSql('CREATE SCHEMA public');
-        $this->addSql('ALTER TABLE task ALTER priority SET DEFAULT 1');
-        $this->addSql('CREATE INDEX idx_parent_id ON task (parent_id)');
+        $this->addSql('DROP INDEX idx_parent_id');
+        $this->addSql('ALTER TABLE task ALTER priority DROP DEFAULT');
     }
 }
