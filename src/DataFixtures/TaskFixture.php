@@ -35,7 +35,7 @@ class TaskFixture extends Fixture implements OrderedFixtureInterface
                 $subTask->setDescription('Description for Task Level 2 - ' . $i);
                 $subTask->setParent($task);
                 $subTask->setOwner($user);
-                $task->setPriority(1);
+                $subTask->setPriority(1);
                 $manager->persist($subTask);
                 $this->addReference('task-level-2-' . $i . '-' . $j, $subTask);
 
@@ -46,7 +46,7 @@ class TaskFixture extends Fixture implements OrderedFixtureInterface
                     $subSubTask->setDescription('Description for Task Level 3 - ' . $i);
                     $subSubTask->setParent($subTask);
                     $subSubTask->setOwner($user);
-                    $task->setPriority(1);
+                    $subSubTask->setPriority(1);
                     $manager->persist($subSubTask);
                     $this->addReference('task-level-3-' . $i . '-' . $j . '-' . $k, $subSubTask);
                 }
