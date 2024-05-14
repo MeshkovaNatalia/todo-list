@@ -11,7 +11,7 @@ interface TaskFormatterInterface
     /**
      * @param array<Task> $tasks
      *
-     * @return array<FormattedTaskDTO>
+     * @return array<Task>
      */
     public function formatAsTree(array $tasks): array;
 }

@@ -4,11 +4,7 @@ declare(strict_types=1);
 
 namespace App\Service;
 
-use App\DTO\TaskFilterDTO;
-use App\DTO\TaskSortDTO;
 use App\Entity\Task;
-use App\Entity\User;
-
 
 class TaskService implements TaskServiceInterface
 {

@@ -44,9 +44,9 @@ class TaskFormType extends AbstractType implements DataMapperInterface
                     new Type(['type' => 'numeric']),
                 ],
             ])
+            // Here it is worth adding a check for the existence of such a task
             ->add('parent_id', NumberType::class, [
-                'required' => false,
-                'empty_data' => null,
+                'required' => false, 'empty_data' => null,
             ])
             ->setDataMapper($this);
 
